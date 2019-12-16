@@ -5,18 +5,20 @@ import java.util.Objects;
 /**
  * 金額
  */
-public class Amount {
-    int value;
-
-
-    public Amount(Fare fare, Surcharge surcharge)
-    {
-        this.value = fare.value + surcharge.getValue();
+public class ChildNum {
+    public int getValue() {
+        return value;
     }
 
-//    public Amount add(Amount other) {
-//        return new Amount(value + other.value);
-//    }
+    int value;
+
+    public ChildNum(int value) {
+        this.value = value;
+    }
+
+    public ChildNum add(ChildNum other) {
+        return new ChildNum(value + other.value);
+    }
 
     @Override
     public String toString() {
@@ -25,10 +27,10 @@ public class Amount {
 
     @Override
     public boolean equals(Object other) {
-        return isEqual((Amount) other);
+        return isEqual((ChildNum) other);
     }
 
-    private boolean isEqual(Amount amount) {
+    private boolean isEqual(ChildNum amount) {
         return value == amount.value;
     }
 

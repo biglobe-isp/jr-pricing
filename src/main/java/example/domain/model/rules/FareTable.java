@@ -1,7 +1,7 @@
 package example.domain.model.rules;
 
+import example.domain.model.bill.Fare;
 import example.domain.model.specification.Destination;
-import org.springframework.stereotype.Component;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -9,17 +9,16 @@ import java.util.Map;
 /**
  * 運賃テーブル
  */
-@Component
 public class FareTable {
 
-    Map<Destination, Integer> map =new EnumMap<Destination, Integer>(Destination .class);
+    static Map<Destination, Fare> map = new EnumMap<Destination, Fare>(Destination.class);
 
-    {
-        map.put(Destination.新大阪, 8910);
-        map.put(Destination.姫路, 10010);
+    static {
+        map.put(Destination.新大阪, new Fare(8910));
+        map.put(Destination.姫路, new Fare(10010));
     }
 
-    public int fare(Destination destination) {
+    public static Fare fare(Destination destination) {
         return map.get(destination);
     }
 }

@@ -2,13 +2,18 @@ package example.presentation;
 
 import example.application.service.FareService;
 import example.domain.model.attempt.Attempt;
+import example.domain.model.bill.AdultNum;
 import example.domain.model.bill.Amount;
 import example.domain.model.bill.Bill;
+import example.domain.model.bill.ChildNum;
 import example.domain.model.specification.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 料金計算コントローラ
@@ -36,7 +41,7 @@ public class Pricing {
             @ApiParam(value="片道/往復", defaultValue = "片道") @RequestParam TicketType ticketType
             ) {
 
-        Attempt attempt = new Attempt(adult, child, departureDate, destination, seatType, trainType, ticketType);
+        Attempt attempt = new Attempt(new AdultNum(adult), new ChildNum(child), departureDate, Departure.東京, destination, seatType, trainType, ticketType);
         Amount amount = fareService.amountFor(attempt);
         return new Bill(attempt, amount).toString();
     }

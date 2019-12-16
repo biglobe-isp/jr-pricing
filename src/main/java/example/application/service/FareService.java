@@ -2,10 +2,10 @@ package example.application.service;
 
 import example.domain.model.attempt.Attempt;
 import example.domain.model.bill.Amount;
-import example.domain.model.rules.DistanceTable;
+import example.domain.model.bill.Fare;
+import example.domain.model.bill.Surcharge;
 import example.domain.model.rules.FareTable;
-import example.domain.model.rules.SurchargeTable;
-import example.domain.model.specification.Destination;
+import example.domain.model.specification.SurchargeTable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,20 +14,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class FareService {
 
-    FareTable fareTable;
-    SurchargeTable surchargeTable;
-    DistanceTable distanceTable;
-
-    public FareService(FareTable fareTable, SurchargeTable surchargeTable, DistanceTable distanceTable) {
-        this.fareTable = fareTable;
-        this.surchargeTable = surchargeTable;
-        this.distanceTable = distanceTable;
-    }
-
     public Amount amountFor(Attempt attempt) {
-        // 仮実装（ひかり、大人１名）
-        Destination to = attempt.to();
-        Amount fare = new Amount(fareTable.fare(to) + surchargeTable.surcharge(to));
-        return fare;
+        Fare fare = FareTable.fare(attempt.getDestination());
+        // FIXME 時間切れ、バリューオブジェクトにしよう
+        int fareAdultTotal = Double.valueOf(Math.floor(fare.getValue() * attempt.getAdultNum().getValue())).intValue();
+        int fareChildTotal =  Double.valueOf(Math.floor(fare.getValue() * attempt.getChildNum().getValue() * 0.5)).intValue();
+
+        Surcharge surcharge = SurchargeTable.surchage(attempt.getTrainType(), attempt.getDestination(), attempt.getSeatType());
+        // FIXME 時間切れ、バリューオブジェクトにしよう
+        int surchargeAdultTotal = Double.valueOf(Math.floor(surcharge.getValue() * attempt.getAdultNum().getValue())).intValue();
+        int surchargeChildTotal = Double.valueOf(Math.floor(surcharge.getValue() * attempt.getChildNum().getValue() * 0.5)).intValue();
+
+        return new Amount(new Fare(fareAdultTotal + fareChildTotal), new Surcharge(surchargeAdultTotal + surchargeChildTotal));
     }
+
 }

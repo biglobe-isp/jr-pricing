@@ -5,5 +5,6 @@ package example.domain.model.specification;
  */
 public enum SeatType {
     指定席,
-    自由席
+    自由席;
+
 }
