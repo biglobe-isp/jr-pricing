@@ -2,10 +2,12 @@ package example.application.service;
 
 import example.domain.model.attempt.Attempt;
 import example.domain.model.bill.Amount;
-import example.domain.model.bill.Fare;
-import example.domain.model.bill.Surcharge;
-import example.domain.model.rules.FareTable;
-import example.domain.model.specification.SurchargeTable;
+import example.domain.model.bill.大人料金;
+import example.domain.model.bill.子供料金;
+import example.domain.model.rules.*;
+import example.domain.model.specification.Destination;
+import example.domain.model.specification.TicketType;
+import example.domain.model.specification.TrainType;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,18 +16,25 @@ import org.springframework.stereotype.Service;
 @Service
 public class FareService {
 
-    public Amount amountFor(Attempt attempt) {
-        Fare fare = FareTable.fare(attempt.getDestination());
-        // FIXME 時間切れ、バリューオブジェクトにしよう
-        int fareAdultTotal = Double.valueOf(Math.floor(fare.getValue() * attempt.getAdultNum().getValue())).intValue();
-        int fareChildTotal =  Double.valueOf(Math.floor(fare.getValue() * attempt.getChildNum().getValue() * 0.5)).intValue();
+    FareTable fareTable;
+    SurchargeTable surchargeTable;
+    DistanceTable distanceTable;
+    割増料金 割増料金;
+    特急料金 特急料金;
 
-        Surcharge surcharge = SurchargeTable.surchage(attempt.getTrainType(), attempt.getDestination(), attempt.getSeatType());
-        // FIXME 時間切れ、バリューオブジェクトにしよう
-        int surchargeAdultTotal = Double.valueOf(Math.floor(surcharge.getValue() * attempt.getAdultNum().getValue())).intValue();
-        int surchargeChildTotal = Double.valueOf(Math.floor(surcharge.getValue() * attempt.getChildNum().getValue() * 0.5)).intValue();
-
-        return new Amount(new Fare(fareAdultTotal + fareChildTotal), new Surcharge(surchargeAdultTotal + surchargeChildTotal));
+    public FareService(FareTable fareTable, SurchargeTable surchargeTable, DistanceTable distanceTable) {
+        this.fareTable = fareTable;
+        this.surchargeTable = surchargeTable;
+        this.distanceTable = distanceTable;
     }
 
+    public Amount amountFor(Attempt attempt) {
+        Destination to = attempt.to();
+        TrainType trainType = attempt.getTrainType();
+        TicketType ticketType = attempt.getTicketType()
+        大人料金 大人料金 = new 大人料金計算().calc(fareTable, 特急料金,attempt.getAdult(),to,trainType,ticketType);
+        子供料金 子供料金 = new 子供料金計算().calc(fareTable, 特急料金,attempt.getchild(),to,trainType,ticketType);
+
+        return new Amount(大人料金,子供料金);
+    }
 }

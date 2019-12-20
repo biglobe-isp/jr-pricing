@@ -8,15 +8,21 @@ import java.util.Objects;
 public class Amount {
     int value;
 
-
-    public Amount(Fare fare, Surcharge surcharge)
-    {
-        this.value = fare.value + surcharge.getValue();
+    public Amount(int value) {
+        this.value = value;
     }
 
-//    public Amount add(Amount other) {
-//        return new Amount(value + other.value);
-//    }
+    public Amount(大人料金 大人料金, 子供料金 子供料金) {
+        this.value = 大人料金.getValue() + 子供料金.getValue();
+    }
+
+    public Amount add(Amount other) {
+        return new Amount(value + other.value);
+    }
+
+    public int calc() {
+        return value;
+    }
 
     @Override
     public String toString() {
